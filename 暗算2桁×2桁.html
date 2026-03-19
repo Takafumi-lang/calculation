@@ -27,7 +27,6 @@ body {
     height: 15%;
     position: absolute;
     top: 0;
-    /* 中央揃えで綺麗に並ぶようにFlexboxに変更 */
     display: flex; 
     flex-direction: column;
     justify-content: center;
@@ -36,7 +35,7 @@ body {
 #record {
     font-size: 30px;
     color: red;
-    visibility: hidden; /* 初期状態は非表示 */
+    visibility: hidden;
 }
 #highscore-display {
     font-size: 18px;
@@ -100,7 +99,7 @@ input[type=number]::-webkit-outer-spin-button {
     height: 30%;
     position: absolute;
     top: 0;
-    display: none; /* 初期状態は非表示 */
+    display: none;
 }
 #evaluation {
     font-size: 5rem;
@@ -118,7 +117,7 @@ input[type=number]::-webkit-outer-spin-button {
     top: 30%;
     font-size: 30px;
     white-space: nowrap;
-    display: none; /* 初期状態は非表示 */
+    display: none;
 }
 #correct-answer {
     position: absolute;
@@ -159,10 +158,10 @@ input[type=number]::-webkit-outer-spin-button {
 let random_1, random_2, RightAnswer;
 let AnswerBox = document.getElementById("answer-box");
 
-// スコア管理用の変数
-let currentScore = 0; // 現在の連続正解数
-let lastScore = 0;    // 直前に間違えた時点の連続正解数
-let highScore = localStorage.getItem("mathHighScore") || 0; // ローカルストレージから最高記録を取得
+// ローカルストレージから各種スコアを取得（なければ0）
+let currentScore = parseInt(localStorage.getItem("mathCurrentScore")) || 0;
+let lastScore = parseInt(localStorage.getItem("mathLastScore")) || 0;
+let highScore = parseInt(localStorage.getItem("mathHighScore")) || 0;
 
 // 初期化時に最高記録を表示
 document.getElementById("highscore-points").textContent = highScore;
@@ -172,22 +171,18 @@ function random(start, end) {
     random_2 = Math.floor(Math.random() * (end - start + 1)) + start;
 }
 
-// 連続正解メッセージの更新を行う関数
 function updateMessage() {
     let recordP = document.getElementById("record");
     
     if (currentScore > 0) {
-        // 連続正解中
         document.getElementById("points").textContent = currentScore;
         document.getElementById("time").textContent = "中です！";
         recordP.style.visibility = "visible";
     } else if (lastScore > 0) {
-        // 間違えた直後（前回1問以上正解していた場合）
         document.getElementById("points").textContent = lastScore;
         document.getElementById("time").textContent = "でした！";
         recordP.style.visibility = "visible";
     } else {
-        // 連続で間違えた、または初期状態
         recordP.style.visibility = "hidden";
     }
 }
@@ -202,14 +197,12 @@ function update() {
     document.getElementsByClassName("evaluation")[0].style.display = "none";
     document.getElementsByClassName("correct")[0].style.display = "none";
     
+    // ページ読み込み時や問題更新時にメッセージを最新状態にする
     updateMessage();
-    
-    // 入力欄にフォーカスを当てる（連続プレイしやすくするため）
     AnswerBox.focus();
 }
 
 function judge() {
-    // 未入力でEnterを押した場合は何もしない
     if (AnswerBox.value === "") return;
 
     let ValueAnswer = AnswerBox.value;
@@ -217,9 +210,12 @@ function judge() {
     if (String(RightAnswer) === ValueAnswer) {
         // 正解の処理
         currentScore += 1;
-        lastScore = 0; // 正解したらlastScoreはリセット
+        lastScore = 0; 
         
-        // ハイスコアの更新とローカルストレージへの保存
+        // ローカルストレージに現在のスコアを保存
+        localStorage.setItem("mathCurrentScore", currentScore);
+        localStorage.setItem("mathLastScore", lastScore);
+        
         if (currentScore > highScore) {
             highScore = currentScore;
             localStorage.setItem("mathHighScore", highScore);
@@ -231,8 +227,12 @@ function judge() {
         document.getElementsByClassName("evaluation")[0].style.display = "block";
     } else {
         // 不正解の処理
-        lastScore = currentScore; // 間違えた時点のスコアを記録
-        currentScore = 0;         // 現在のスコアをリセット
+        lastScore = currentScore; 
+        currentScore = 0;         
+        
+        // ローカルストレージにスコアを保存
+        localStorage.setItem("mathCurrentScore", currentScore);
+        localStorage.setItem("mathLastScore", lastScore);
         
         document.getElementById("evaluation").textContent = "不正解";
         document.getElementById("evaluation").style.color = "blue";
@@ -241,16 +241,12 @@ function judge() {
         document.getElementsByClassName("correct")[0].style.display = "block";
     }
     
-    // 判定後すぐにメッセージを切り替える
     updateMessage();
-    
-    // 1.5秒後に次の問題へ
     window.setTimeout(update, 1500);
 }
 
 AnswerBox.addEventListener("keydown", EnterJudge);
 function EnterJudge(e) {
-    // IME入力中のEnterは無視する設定を追加しておくとスマホでより安全です
     if (e.key === "Enter" && !e.isComposing) {
         judge();
     }
