@@ -158,6 +158,9 @@ input[type=number]::-webkit-outer-spin-button {
 let random_1, random_2, RightAnswer;
 let AnswerBox = document.getElementById("answer-box");
 
+// 連打対策用のフラグを追加（前回の bit と同じ役割）
+let isLocked = false; 
+
 // ローカルストレージから各種スコアを取得（なければ0）
 let currentScore = parseInt(localStorage.getItem("mathCurrentScore")) || 0;
 let lastScore = parseInt(localStorage.getItem("mathLastScore")) || 0;
@@ -188,6 +191,8 @@ function updateMessage() {
 }
 
 function update() {
+    isLocked = false; // 新しい問題が出たのでロックを解除
+
     random(11, 99);
     document.getElementById("number1").textContent = random_1;
     document.getElementById("number2").textContent = random_2;
@@ -204,6 +209,9 @@ function update() {
 
 function judge() {
     if (AnswerBox.value === "") return;
+    if (isLocked) return; // 既に判定中なら処理をストップ（連打防止）
+    
+    isLocked = true; // 判定処理に入ったのでロックをかける
 
     let ValueAnswer = AnswerBox.value;
     
