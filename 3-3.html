@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暗算練習：3桁×3桁</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .tops {
+            width: 100%;
+            height: 20%;
+            border-bottom: 2px solid #000;
+            position: absolute;
+            top: 0;
+            display: block;
+        }
+
+        .title-1 {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            white-space: nowrap;
+        }
+
+        .title-2 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            white-space: nowrap;
+        }
+
+        #score {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: red;
+            white-space: nowrap;
+            display: block;
+        }
+
+        .questions {
+            width: 100%;
+            height: 15%;
+            border-top: 2px solid #000;
+            position: absolute;
+            top: 20%;
+        }
+
+        .formula {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            white-space: nowrap;
+            width: 90%;
+            height: 70%;
+            border: 1px solid #000;
+            border-radius: 15px;
+        }
+
+        #number-1 {
+            position: absolute;
+            top: 50%;
+            left: 25%;
+            transform: translate(-50%, -50%);
+        }
+
+        #number-2 {
+            position: absolute;
+            top: 50%;
+            left: 75%;
+            transform: translate(-50%, -50%);
+        }
+
+        #times {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .answers {
+            width: 100%;
+            height: 10%;
+            position: absolute;
+            top: 35%;
+            font-size: 3rem;
+        }
+
+        .equal {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+        }
+
+        #ans-box {
+            width: 40%;
+            height: 60%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #111;
+            border-radius: 5px;
+            font-size: 80%;
+        }
+
+        .evaluation {
+            width: 100%;
+            height: 15%;
+            position: absolute;
+            top: 45%;
+            display: block;
+        }
+
+        #evaluation {
+            font-size: 5rem;
+            font-weight: 700;
+            color: blue;
+            white-space: nowrap;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+
+        .right-ans {
+            font-size: 1.3rem;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            width: 30%;
+            height: 100%;
+            display: block;
+        }
+
+        #line-1 {
+            position: absolute;
+            top: 25%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            margin: 0 20px;
+        }
+
+        #line-2 {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            margin: 0 20px;
+            background: rgba(0, 255, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        #line-3 {
+            position: absolute;
+            top: 75%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            margin: 0 20px;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="tops">
+        <h2 class="title-1">暗算練習中級</h2>
+        <h2 class="title-2">３桁×３桁</h2>
+        <p id="score"><span id="points"></span>問連続正解<span id="time">中です！</span></p>
+    </div>
+    <div class="questions">
+        <p class="formula"><span id="number-1"></span><span id="times">×</span><span id="number-2"></span></p>
+    </div>
+    <div class="answers">
+        <p class="equal">=</p>
+        <input type="number" id="ans-box">
+    </div>
+    <div class="evaluation">
+        <p id="evaluation">不正解</p>
+        <div class="right-ans">
+            <p id="line-1">正解は...</p>
+            <p id="line-2">""</p>
+            <p id="line-3">です。</p>
+        </div>
+    </div>
+
+    <script>
+        //変数を定義=============================================================
+        let rightAnswer, valueAnswer, bit;
+        let number = [];
+        let box = document.getElementById("ans-box");
+        let score = 0;
+        let count = 0;
+        //=======================================================================
+        //関数を定義-------------------------------------------------------------
+        //乱数生成
+        function random(start1, end1, start2, end2) {
+            number[0] = Math.floor(Math.random() * (end1 - start1 + 1)) + start1;
+            number[1] = Math.floor(Math.random() * (end2 - start2 + 1)) + start2;
+        }
+
+        //初期化
+        function init() {
+            document.getElementById("score").style.display = "none";
+        }
+
+        //問題更新
+        function update() {
+            document.getElementById("ans-box").value = "";
+            random(101, 999, 101, 999);
+            document.getElementById("number-1").textContent = number[0];
+            document.getElementById("number-2").textContent = number[1];
+            rightAnswer = number[0] * number[1];
+            document.getElementsByClassName("evaluation")[0].style.display = "none";
+            bit = 0;
+            score = Number(localStorage.getItem("score-3"));
+            count = Number(localStorage.getItem("count-3"));
+        }
+
+        //判定
+        function judge() {
+            valueAnswer = document.getElementById("ans-box").value;
+            if (bit === 0) {
+                if (valueAnswer === String(rightAnswer)) {
+                    //正解の処理
+                    score += 1;
+                    document.getElementById("points").textContent = score;
+                    document.getElementById("time").textContent = "中です！";
+                    document.getElementById("evaluation").textContent = "正解";
+                    document.getElementById("evaluation").style.color = "red";
+                    document.getElementsByClassName("evaluation")[0].style.display = "block";
+                    document.getElementsByClassName("right-ans")[0].style.display = "none";
+                    document.getElementById("evaluation").style.left = "50%";
+                    document.getElementById("evaluation").style.transform = "translate(-50%, -50%)";
+                    document.getElementById("score").style.display = "block";
+                    window.setTimeout(update, 1500);
+                    bit = 1;
+                } else {
+                    //不正解の処理
+                    count = score;
+                    score = 0;
+                    document.getElementById("points").textContent = count;
+                    document.getElementById("time").textContent = "でした！";
+                    document.getElementById("evaluation").textContent = "不正解";
+                    document.getElementById("evaluation").style.color = "blue";
+                    document.getElementsByClassName("evaluation")[0].style.display = "block";
+                    document.getElementsByClassName("right-ans")[0].style.display = "block";
+                    document.getElementById("evaluation").style.left = "0";
+                    document.getElementById("evaluation").style.transform = "translateY(-50%)";
+                    document.getElementById("line-2").textContent = `"${rightAnswer}"`;
+                    if (count === 0) {
+                        init();
+                    }
+                    window.setTimeout(update, 1500);
+                    bit = 1;
+                }
+                localStorage.setItem("score-3", score);
+                localStorage.setItem("count-3", count);
+            }
+        }
+
+        //Enterの処理
+        function EnterPush(e) {
+            if (e.key === "Enter") {
+                judge();
+            }
+        }
+
+        //-----------------------------------------------------------------------
+        //関数の実行#############################################################
+        update();
+
+        //#######################################################################
+
+        if (score === 0) {
+            if (count === 0) {
+                init();
+            } else {
+                document.getElementById("points").textContent = count;
+                document.getElementById("time").textContent = "でした！";
+            }
+        } else {
+            document.getElementById("points").textContent = score;
+            document.getElementById("time").textContent = "中です！";
+        }
+        box.addEventListener("keydown", EnterPush);
+    </script>
+</body>
+</html>
