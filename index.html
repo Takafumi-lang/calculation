@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #F9F6F0;
+        }
+        
+        .tops {
+            width: 100vw;
+            height: 15vh;
+            background-color: #F2F2F2;
+            position: relative;
+        }
+        
+        .title {
+            width: fit-content;
+            height: fit-content;
+            font-size: 2.5rem;
+            font-weight: bold;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+        
+        .sentence {
+            width: fit-content;
+            height: fit-content;
+            font-size: 1.5rem;
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+        
+        .buttons {
+            width: 100vw;
+            height: 85vh;
+            position: relative;
+        }
+        
+        .btn {
+            font-size: 1.5rem;
+            padding: 15px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .btn-1 {
+            top: 16%;
+        }
+        
+        .btn-2 {
+            top: 33%;
+        }
+        
+        .btn-3 {
+            top: 50%;
+        }
+        
+        .btn-4 {
+            top: 66%;
+        }
+        
+        .btn-5 {
+            top: 83%;
+        }
+    </style>
+    <title>暗算トップページ</title>
+</head>
+<body>
+    <div class="tops">
+        <p class="title">暗算トップページ</p>
+        <p class="sentence">挑戦したい問題を選んでください</p>
+    </div>
+    <div class="buttons">
+        <a href="https://takafumi-lang.github.io/calculation/2-1.html" class="btn btn-1">2桁×1桁</a>
+        <a href="https://takafumi-lang.github.io/calculation/2-2.html" class="btn btn-2">2桁×2桁</a>
+        <a href="https://takafumi-lang.github.io/calculation/3-3.html" class="btn btn-3">3桁×3桁</a>
+        <a href="https://takafumi-lang.github.io/calculation/4-4.html" class="btn btn-4">4桁×4桁</a>
+        <a href="https://takafumi-lang.github.io/calculation/5-5.html" class="btn btn-5">5桁×5桁</a>
+    </div>
+</body>
+</html>
